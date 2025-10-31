@@ -11,7 +11,10 @@ public class CameraController : MonoBehaviour
         targer = FindAnyObjectByType<PlayerController>().transform;
 
         offset = transform.position;
-        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        //Cursor.lockState = CursorLockMode.Locked;
     }
 
 

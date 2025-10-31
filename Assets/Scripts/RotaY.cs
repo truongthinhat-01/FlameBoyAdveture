@@ -3,29 +3,24 @@
 public class RotaY : MonoBehaviour
 {
     [SerializeField] private float rotateSpeed = 180f; // độ/giây
-    [SerializeField] private float rotateAngle = -90f;  // góc xoay (độ)
+    [SerializeField] private float rotateAngle = -90f; // góc xoay (độ)
     [SerializeField] private float waitTime = 0.5f;    // thời gian chờ trước khi quay ngược
 
     private Quaternion startRotation;
     private Quaternion targetRotation;
     private bool rotatingForward = false;
     private bool rotatingBack = false;
+    private bool rotated = false; // đã xoay sang hướng mới chưa
     private float timer = 0f;
 
     void Start()
     {
         startRotation = transform.rotation; // lưu góc ban đầu
+        targetRotation = startRotation * Quaternion.Euler(0f, rotateAngle, 0f);
     }
 
     void Update()
     {
-        // Nhấn Space để bắt đầu xoay 90°
-        if (Input.GetKeyDown(KeyCode.Space) && !rotatingForward && !rotatingBack)
-        {
-            targetRotation = startRotation * Quaternion.Euler(0f, rotateAngle, 0f);
-            rotatingForward = true;
-        }
-
         // Quay tới góc 90°
         if (rotatingForward)
         {
@@ -35,17 +30,8 @@ public class RotaY : MonoBehaviour
             {
                 transform.rotation = targetRotation;
                 rotatingForward = false;
-                timer = waitTime; // đợi trước khi quay lại
-            }
-        }
-
-        // Chờ một chút trước khi quay ngược
-        if (timer > 0)
-        {
-            timer -= Time.deltaTime;
-            if (timer <= 0)
-            {
-                rotatingBack = true;
+                rotated = true;
+                timer = waitTime; // đợi trước khi có thể xoay lại
             }
         }
 
@@ -58,6 +44,30 @@ public class RotaY : MonoBehaviour
             {
                 transform.rotation = startRotation;
                 rotatingBack = false;
+                rotated = false;
+                timer = waitTime;
+            }
+        }
+
+        // Giảm thời gian chờ
+        if (timer > 0)
+            timer -= Time.deltaTime;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        // Khi Player chạm trigger
+        if (other.CompareTag("Player") && timer <= 0f)
+        {
+            if (!rotated && !rotatingForward && !rotatingBack)
+            {
+                // Lần đầu → xoay tới
+                rotatingForward = true;
+            }
+            else if (rotated && !rotatingForward && !rotatingBack)
+            {
+                // Lần thứ hai → xoay ngược lại
+                rotatingBack = true;
             }
         }
     }
