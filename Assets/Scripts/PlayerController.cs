@@ -44,7 +44,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         yStore = moveAmount.y;
-        moveAmount = (cam.transform.forward * Input.GetAxisRaw("Vertical")) + cam.transform.right * Input.GetAxisRaw("Horizontal");
+        moveAmount = (cam.transform.forward * Input.GetAxisRaw("Vertical")) + (cam.transform.right * Input.GetAxisRaw("Horizontal"));
         moveAmount.y = 0f;
         moveAmount = moveAmount.normalized;
 
@@ -58,6 +58,7 @@ public class PlayerController : MonoBehaviour
                 transform.rotation = Quaternion.Slerp(transform.rotation, newRo, rotateSpeed * Time.deltaTime);
             }
         }
+
         moveAmount.y = yStore;
 
 
