@@ -61,7 +61,30 @@ public class SpikeTrap : MonoBehaviour
         {
             Vector3 p = Vector3.Lerp(spikesIdlePosition, spikesActivePosition, timer / TransitionDuration);
             spikesMesh.transform.localPosition = p;
-            timer += Time.deltaTime;
+
+            if(timer >= TransitionDuration)
+            {
+                ChangeState(EState.Active);
+            }
+
         }
+        else if(state == EState.TrasitionToIdle)
+        {
+            Vector3 p = Vector3.Lerp( spikesActivePosition,spikesIdlePosition, timer / TransitionDuration);
+            spikesMesh.transform.localPosition = p;
+            if (timer >= TransitionDuration)
+            {
+                ChangeState(EState.Idle);
+            }
+
+        }
+        else if(state == EState.Active)
+        {
+            if(timer>= ActiveDuration)
+            {
+                ChangeState(EState.TrasitionToIdle);
+            }
+        }
+            timer += Time.deltaTime;
     }
 }
