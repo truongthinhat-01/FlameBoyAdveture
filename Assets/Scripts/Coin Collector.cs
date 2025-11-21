@@ -9,19 +9,22 @@ public class CoinCollector : MonoBehaviour
     {
         playerCon = GetComponent<PlayerController>();
     }
-    //void CreateCollectFX(Vector3 position)
-    //{
-    //    Instantiate(coinCollectFX,position,Quaternion.identity);
-        
-    //}
+    void CreateCollectFX(Vector3 position)
+    {
+        Instantiate(coinCollectFX, position, Quaternion.identity);
+
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Coin"))
         {
-           // CreateCollectFX(other.transform.position + Vector3.up * 0.7f);
-          
-           // playerCon.coinCollectFX.Invoke();
+            CreateCollectFX(other.transform.position + Vector3.up * 0.7f);
+
+            // playerCon.coinCollectFX.Invoke();
+            CoinManager.Instance.AddCoin(1);
+
             other.gameObject.SetActive(false);
         }
+        
     }
 }

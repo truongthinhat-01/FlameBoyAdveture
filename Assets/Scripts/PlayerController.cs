@@ -87,6 +87,11 @@ public class PlayerController : MonoBehaviour
         amin.SetBool("isGrounded", charCon.isGrounded);
         amin.SetFloat("yVel", moveAmount.y);
 
+        if (Input.GetKeyDown(KeyCode.Alpha0) && !amin.GetCurrentAnimatorStateInfo(0).IsName("Skill0"))
+        {
+            amin.SetTrigger("skill0");
+        }
+
 
     }
 }

@@ -129,7 +129,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 7a334c0954fc4e342870d90bac25dc35, type: 3}
       propertyPath: m_LocalScale.x
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7a334c0954fc4e342870d90bac25dc35, type: 3}
       propertyPath: m_LocalScale.y
@@ -137,7 +137,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7a334c0954fc4e342870d90bac25dc35, type: 3}
       propertyPath: m_LocalScale.z
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7a334c0954fc4e342870d90bac25dc35, type: 3}
       propertyPath: m_LocalPosition.x
@@ -203,7 +203,7 @@ GameObject:
   m_Component:
   - component: {fileID: 446332974}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Chap1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
