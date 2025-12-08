@@ -1,4 +1,6 @@
 ﻿using System.Collections;
+using NUnit.Framework;
+using UnityEditor.Callbacks;
 using UnityEngine;
 
 public class EnemyController : MonoBehaviour
@@ -16,10 +18,14 @@ public class EnemyController : MonoBehaviour
     public float runSpeed = 3.5f;
 
     private bool isHitPlaying = false;   // Enemy đang trong animation Hit
+    private bool isDeath = false;
+
+    public int maxHit = 3;
+    private int  currentHit = 0;
 
     private void Update()
     {
-        if (player == null) return;
+        if (player == null || isDeath) return;
 
         // Nếu đang bị trúng đạn → không làm gì nữa
         if (isHitPlaying) return;
@@ -55,16 +61,15 @@ public class EnemyController : MonoBehaviour
     }
 
     // Hàm play animation Hit khi enemy trúng đạn
-    //public void TakeDamage()
-    //{
-    //    if (isHitPlaying) return;
-
-    //    isHitPlaying = true;
-    //    anim.SetTrigger("isHit");
-    //}
+   
     public void TakeDamage()
     {
-        if (isHitPlaying) return;
+        if (isHitPlaying || isDeath) return;
+        currentHit ++;
+        if (currentHit >= maxHit)
+        {
+            Die();
+        }
 
         isHitPlaying = true;
         anim.SetTrigger("isHit");
@@ -76,6 +81,19 @@ public class EnemyController : MonoBehaviour
         yield return new WaitForSeconds(0.5f); // thời gian bằng độ dài animation Hit
         isHitPlaying = false;
         anim.ResetTrigger("isHit");
+    }
+    void Die()
+    {
+        isDeath = true;
+        anim.SetTrigger("isDeath");
+
+         if (TryGetComponent(out Collider col)) col.enabled = false;
+        
+        anim.SetBool("isWalk", false);
+        anim.SetBool("isRun", false);
+        anim.SetBool("isAttack", false);
+        Destroy(gameObject,3f);
+
     }
 
 

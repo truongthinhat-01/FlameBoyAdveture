@@ -20,4 +20,14 @@ public class Bullet : MonoBehaviour
         // Hủy viên đạn sau khi va chạm
         Destroy(gameObject);
     }
+    private void OnCollisionEnter(Collision collision)
+{
+    if(collision.collider.CompareTag("Enemy"))
+    {
+        collision.collider.GetComponent<EnemyController>().TakeDamage();
+    }
+
+    Destroy(gameObject);
+}
+
 }

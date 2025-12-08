@@ -7,7 +7,7 @@ public class Key : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             KeyController.Instance.AddKey(1);  // tăng key
-            other.gameObject.SetActive(false);        // nhặt key
+            gameObject.SetActive(false);        // nhặt key
         }
     }
 }
