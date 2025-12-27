@@ -5,27 +5,61 @@ public class CoinManager : MonoBehaviour
     public static CoinManager Instance;
 
     [Header("Coin Settings")]
-    public int currentCoin = 0;
     public int requiredCoin = 10;
+    public int currentCoin;
 
-    // [Header("Stair")]
-    // public StairController stair;   // ⬅ kéo script cầu thang vào
+    [Header("Target Object")]
+    public GameObject gameObj; // cửa / cầu thang / boss ...
 
-    public GameObject enemy;
-
-    private void Awake()
+    void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+            Instance = this;
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
     }
 
+    void Start()
+    {
+        currentCoin = 0;
+
+        if (gameObj != null)
+            gameObj.SetActive(false);
+
+        UpdateCoinUI();
+    }
+
+    // ===== ADD COIN =====
     public void AddCoin(int amount)
     {
         currentCoin += amount;
+        UpdateCoinUI();
 
         if (currentCoin >= requiredCoin)
         {
-            //stair.OnPlayerComplete();   // ⬅ gọi cầu thang trồi lên
-            enemy.SetActive(true);
+            Unlock();
         }
+    }
+
+    // ===== UPDATE UI =====
+    void UpdateCoinUI()
+    {
+        if (UIManager.HasInstance &&
+            UIManager.Instance.hudPanel.gameObject.activeSelf)
+        {
+            UIManager.Instance.hudPanel.UpdateCoinUI(currentCoin);
+        }
+    }
+
+    // ===== UNLOCK =====
+    void Unlock()
+    {
+        Debug.Log("ĐỦ COIN!");
+
+        if (gameObj != null)
+            gameObj.SetActive(true);
     }
 }

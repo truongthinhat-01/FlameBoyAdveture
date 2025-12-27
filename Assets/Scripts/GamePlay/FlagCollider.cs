@@ -2,13 +2,18 @@ using UnityEngine;
 
 public class FlagCollider : MonoBehaviour
 {
-   public ColliderMoveDownY door;
+    public MovingPlatform door;
+
     public void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            door.StartMoveDown();
-           // gameObject.SetActive(false);
+            if (door != null)
+            {
+                door.StartMoveDown();
+                
+               
+            }
         }
     }
 }
