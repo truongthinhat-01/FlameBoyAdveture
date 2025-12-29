@@ -142,43 +142,59 @@ public class UIManager : BaseManager<UIManager>
             loadingRoot.SetActive(true);
     }
 
-    public void LoadSelectedMap(string mapName)
-    {
-        ShowLoading();
-
-        asyncLoad = SceneManager.LoadSceneAsync(mapName);
-        asyncLoad.allowSceneActivation = false;
-
-        loadingBar.OnLoadingComplete = OnUILoadingDone;
-        loadingBar.StartLoading();
-
-        StartCoroutine(SyncLoading());
-    }
-
-     IEnumerator SyncLoading()
-    {
-        while (!asyncLoad.isDone)
-        {
-            float realProgress = asyncLoad.progress / 0.9f;
-
-            loadingBar.fillImage.fillAmount =
-                Mathf.MoveTowards(
-                    loadingBar.fillImage.fillAmount,
-                    realProgress,
-                    loadingBar.fillSpeed * Time.deltaTime
-                );
-
-            yield return null;
-        }
-    }
-
-    void OnUILoadingDone()
-    {
-        asyncLoad.allowSceneActivation = true;
-    }
      public string GetSelectedMap()
     {
         return mapToLoad;
     }
 
+
+    // Thay thế hàm LoadSelectedMap để đảm bảo thứ tự gọi
+     public void LoadSelectedMap(string mapName)
+    {
+    mapToLoad = mapName; // Gán tên map ngay khi bắt đầu load
+    ShowLoading();
+    Time.timeScale = 1f;
+
+    // 1. Tải cảnh ngầm nhưng chưa cho phép kích hoạt ngay
+    asyncLoad = SceneManager.LoadSceneAsync(mapName);
+    asyncLoad.allowSceneActivation = false; 
+
+    // 2. Kết nối sự kiện kết thúc thanh loading giả
+    if (loadingBar != null)
+    {
+        loadingBar.OnLoadingComplete = OnUILoadingDone;
+        loadingBar.StartLoading();
+    }
+
+    // 3. Theo dõi tiến trình tải thật
+    StartCoroutine(SyncLoadingRoutine());
+}
+
+    IEnumerator SyncLoadingRoutine()
+    {
+    // Chờ cho đến khi Unity tải xong 90% dữ liệu (mức tối đa khi allowSceneActivation = false)
+    while (asyncLoad != null && asyncLoad.progress < 0.9f)
+    {
+        yield return null;
+    }
+    Debug.Log("Dữ liệu cảnh đã sẵn sàng trong bộ nhớ.");
+    }
+
+    void OnUILoadingDone()
+    {
+    if (asyncLoad != null)
+    {
+        Debug.Log("Thanh loading đã xong! Kích hoạt vào Game.");
+        asyncLoad.allowSceneActivation = true; // Cho phép vào cảnh mới
+    }
+    }
+    // Thêm hàm này vào UIManager.cs
+public void UpdatePlayerHealth(int hp)
+{
+    currentHealth = hp;
+    if (healthUI != null)
+    {
+        healthUI.UpdateHealth(hp);
+    }
+}
 }

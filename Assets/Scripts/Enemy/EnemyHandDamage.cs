@@ -1,33 +1,34 @@
 using UnityEngine;
+using System.Collections;
 
 public class EnemyHandDamage : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
+        // Kiểm tra đúng Tag "Player"
         if (other.CompareTag("Player"))
         {
-            if (UIManager.HasInstance)
+            PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
             {
-                ApplyDamage();
+                playerHealth.TakeDamage(1); // Gọi trực tiếp hàm TakeDamage trên Player
+                Debug.Log("Đã đấm trúng Player!");
+                
+                // Tắt tạm thời và TỰ ĐỘNG bật lại sau 0.8s để có thể đấm phát tiếp theo
+                StartCoroutine(ResetHandCollider());
             }
         }
     }
 
-    void ApplyDamage()
+    IEnumerator ResetHandCollider()
     {
-        // Trừ máu
-        UIManager.Instance.currentHealth -= 1;
-        
-        if (UIManager.Instance.healthUI != null)
-            UIManager.Instance.healthUI.UpdateHealth(UIManager.Instance.currentHealth);
-
-        if (UIManager.Instance.currentHealth <= 0 && UIManagerEvent.HasInstance)
-            UIManagerEvent.Instance.LoseGame();
-            
-        Debug.Log("Tay quái vật đánh trúng Player!");
-        
-        // Tắt Collider ngay lập tức để tránh đa sát thương trong 1 frame
-        // Nó sẽ được EnableAttack() bật lại ở lần vung tay sau
-        GetComponent<Collider>().enabled = false;
+        Collider col = GetComponent<Collider>();
+        if (col != null)
+        {
+            col.enabled = false; 
+            yield return new WaitForSeconds(0.8f); // Thời gian chờ giữa 2 lần nhận dame
+            col.enabled = true;
+            Debug.Log("Tay quái vật đã sẵn sàng đánh tiếp");
+        }
     }
 }

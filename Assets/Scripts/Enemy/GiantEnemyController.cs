@@ -70,9 +70,12 @@ public class GiantEnemyController : MonoBehaviour
     }
 
     // --- Animation Events (Gọi từ cửa sổ Animation của đòn đánh) ---
-    public void EnableHandCollider() {
-        if (handCollider != null) handCollider.enabled = true;
+ public void EnableHandCollider() {
+    if (handCollider != null) {
+        handCollider.enabled = true; // BẬT LẠI để có thể gây dame lần tiếp theo
+        Debug.Log("Đã bật lại Collider tay để đánh tiếp");
     }
+}
 
     public void DisableHandCollider() {
         if (handCollider != null) handCollider.enabled = false;

@@ -1,182 +1,137 @@
-﻿// using System.Collections;
-// using System.Collections.Generic;
-// using UnityEngine;
+﻿// using UnityEngine;
 
 // public class PlayerController : MonoBehaviour
 // {
+//     [Header("References")]
 //     [SerializeField] private CharacterController charCon;
-//     [SerializeField] private Animator amin;
-//     [SerializeField] private float moveSpeed;
-//     [SerializeField] private float jumpForce, gravityScale;
+//     [SerializeField] private Animator anim;
+//     private CameraController cam;
+
+//     [Header("Movement")]
+//     [SerializeField] private float moveSpeed = 5f;
+//     [SerializeField] private float jumpForce = 8f;
+//     [SerializeField] private float gravityScale = 2f;
 //     [SerializeField] private float rotateSpeed = 10f;
 
-//     private CameraController cam;
+//     [Header("Particles")]
+//     public GameObject jumpParticle;
+//     public GameObject landingParticle;
+//     public GameObject skillParticleOne;
+//     public GameObject skillParticleTwo;
+
+//     [Header("Skill Points")]
+//     public Transform pawPointOne;
+//     public Transform pawPointTwo;
+
 //     private Vector3 moveAmount;
-//     private float yStore;
-//     public GameObject jumpParticle, landingParticle, skillParticleOne,skillParticleTwo;
-//     private bool lastGrondned;
-//     public Transform pawPointOne,pawPointTwo;
+//     private float yVelocity;
+//     private bool lastGrounded;
 
-
-
-//     private void Start()
+//     void Start()
 //     {
 //         cam = FindAnyObjectByType<CameraController>();
-
-//         lastGrondned = true;
-
-//         charCon.Move(new Vector3(0f, Physics.gravity.y * gravityScale * Time.deltaTime, 0f));
+//         lastGrounded = true;
 //     }
 
-
-//     private void FixedUpdate()
+//     void Update()
 //     {
-//         if (!charCon.isGrounded)
+        
+//         // ❌ Nếu chết → khóa toàn bộ điều khiển
+//         if (anim.GetBool("isDead"))
+//             return;
+
+//         HandleMovement();
+//         HandleJumpAndGravity();
+//         HandleSkills();
+//         UpdateAnimator();
+//     }
+
+//     // ================= MOVEMENT =================
+//     void HandleMovement()
+//     {
+//         Vector3 input = (cam.transform.forward * Input.GetAxisRaw("Vertical")) +
+//                         (cam.transform.right * Input.GetAxisRaw("Horizontal"));
+//         input.y = 0f;
+//         input.Normalize();
+
+//         if (input.magnitude > 0.1f)
 //         {
-//             moveAmount.y = moveAmount.y + (Physics.gravity.y * gravityScale * Time.fixedDeltaTime);
+//             Quaternion targetRot = Quaternion.LookRotation(input);
+//             transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, rotateSpeed * Time.deltaTime);
+//         }
+
+//         moveAmount.x = input.x * moveSpeed;
+//         moveAmount.z = input.z * moveSpeed;
+//     }
+
+//     // ================= JUMP + GRAVITY =================
+//     void HandleJumpAndGravity()
+//     {
+//         if (charCon.isGrounded)
+//         {
+//             if (!lastGrounded && landingParticle)
+//                 landingParticle.SetActive(true);
+
+//             if (yVelocity < 0)
+//                 yVelocity = -2f; // ép dính đất
+
+//             if (Input.GetButtonDown("Jump"))
+//             {
+//                 yVelocity = jumpForce;
+//                 if (jumpParticle) jumpParticle.SetActive(true);
+//             }
 //         }
 //         else
 //         {
-//             moveAmount.y = Physics.gravity.y * gravityScale * Time.deltaTime;
+//             yVelocity += Physics.gravity.y * gravityScale * Time.deltaTime;
 //         }
 
+//         lastGrounded = charCon.isGrounded;
+
+//         moveAmount.y = yVelocity;
+//         charCon.Move(moveAmount * Time.deltaTime);
 //     }
-//     void Update()
-// {
-//     // ❗ NẾU ĐÃ CHẾT → KHÔNG ĐƯỢC CẬP NHẬT ANIMATOR NỮA
-//     if (amin.GetBool("isDead"))
-//         return;
 
-//     yStore = moveAmount.y;
-//     moveAmount = (cam.transform.forward * Input.GetAxisRaw("Vertical")) +
-//                  (cam.transform.right * Input.GetAxisRaw("Horizontal"));
-//     moveAmount.y = 0f;
-//     moveAmount = moveAmount.normalized;
-
-//     if (moveAmount.magnitude > .1f)
+//     // ================= SKILLS =================
+//     void HandleSkills()
 //     {
-//         Quaternion newRo = Quaternion.LookRotation(moveAmount);
-//         transform.rotation = Quaternion.Slerp(transform.rotation, newRo, rotateSpeed * Time.deltaTime);
+//         // Skill 1
+//         if (Input.GetKeyDown(KeyCode.Alpha1) &&
+//             !anim.GetCurrentAnimatorStateInfo(0).IsName("SkillOne"))
+//         {
+//             anim.SetTrigger("skillOne");
+//             if (skillParticleOne && pawPointOne)
+//                 Instantiate(skillParticleOne, pawPointOne.position, pawPointOne.rotation);
+//         }
+
+//         // Skill 2
+//         if (Input.GetKeyDown(KeyCode.Alpha2) &&
+//             !anim.GetCurrentAnimatorStateInfo(0).IsName("SkillTwo"))
+//         {
+//             anim.SetTrigger("skillTwo");
+//             if (skillParticleTwo && pawPointTwo)
+//                 Instantiate(skillParticleTwo, pawPointTwo.position, pawPointTwo.rotation);
+//         }
 //     }
 
-//     moveAmount.y = yStore;
-
-//     if (charCon.isGrounded)
+//     // ================= ANIMATOR =================
+//     void UpdateAnimator()
 //     {
-//         jumpParticle.SetActive(false);
+//         Vector3 horizontalVel = new Vector3(moveAmount.x, 0f, moveAmount.z);
 
-//         if (!lastGrondned)
-//             landingParticle.SetActive(true);
-
-//         if (Input.GetButtonDown("Jump"))
-//         {
-//             moveAmount.y = jumpForce;
-//             jumpParticle.SetActive(true);
-//         }
+//         anim.SetFloat("speed", horizontalVel.magnitude);
+//         anim.SetBool("isGrounded", charCon.isGrounded);
+//         anim.SetFloat("yVel", yVelocity);
 //     }
 
-//     lastGrondned = charCon.isGrounded;
-
-//     charCon.Move(new Vector3(
-//         moveAmount.x * moveSpeed,
-//         moveAmount.y,
-//         moveAmount.z * moveSpeed
-//     ) * Time.deltaTime);
-
-//     float moveVel = new Vector3(moveAmount.x, 0f, moveAmount.z).magnitude * moveSpeed;
-
-//     amin.SetFloat("speed", moveVel);
-//     amin.SetBool("isGrounded", charCon.isGrounded);
-//     amin.SetFloat("yVel", moveAmount.y);
-
-//      if (Input.GetKeyDown(KeyCode.Alpha2) && !amin.GetCurrentAnimatorStateInfo(0).IsName("SkillTwo"))
-//         {
-
-//             amin.SetTrigger("skillTwo");
-//             Instantiate(skillParticleTwo, pawPointTwo.position, pawPointTwo.rotation);
-
-//         }
-
-//    if (Input.GetKeyDown(KeyCode.Alpha2) && !amin.GetCurrentAnimatorStateInfo(0).IsName("SkillTwo"))
-//         {
-
-//             amin.SetTrigger("skillTwo");
-//             Instantiate(skillParticleTwo, pawPointTwo.position, pawPointTwo.rotation);
-
-//         }
-
-
+//     // ================= PUBLIC =================
+//     public void Die()
+//     {
+//         anim.SetBool("isDead", true);
+//         moveAmount = Vector3.zero;
+//         yVelocity = 0f;
 //     }
-//     // void Update()
-//     // {
-//     //     yStore = moveAmount.y;
-//     //     moveAmount = (cam.transform.forward * Input.GetAxisRaw("Vertical")) + (cam.transform.right * Input.GetAxisRaw("Horizontal"));
-//     //     moveAmount.y = 0f;
-//     //     moveAmount = moveAmount.normalized;
-
-
-//     //     if (moveAmount.magnitude > .1f)
-//     //     {
-
-//     //         if (moveAmount != Vector3.zero)
-//     //         {
-//     //             Quaternion newRo = Quaternion.LookRotation(moveAmount);
-//     //             transform.rotation = Quaternion.Slerp(transform.rotation, newRo, rotateSpeed * Time.deltaTime);
-//     //         }
-//     //     }
-
-//     //     moveAmount.y = yStore;
-
-
-//     //     if (charCon.isGrounded)
-//     //     {
-//     //         jumpParticle.SetActive(false);
-
-//     //         if (!lastGrondned)
-//     //         {
-//     //             landingParticle.SetActive(true);
-//     //         }
-
-//     //         if (Input.GetButtonDown("Jump"))
-//     //         {
-//     //             moveAmount.y = jumpForce;
-//     //             jumpParticle.SetActive(true);
-//     //         }
-//     //     }
-//     //     lastGrondned = charCon.isGrounded;
-
-//     //     charCon.Move(new Vector3(moveAmount.x * moveSpeed, moveAmount.y, moveAmount.z * moveSpeed) * Time.deltaTime);
-
-//     //     float moveVel = new Vector3(moveAmount.x, 0f, moveAmount.z).magnitude * moveSpeed;
-
-//     //     amin.SetFloat("speed", moveVel);
-//     //     amin.SetBool("isGrounded", charCon.isGrounded);
-//     //     amin.SetFloat("yVel", moveAmount.y);
-
-//     //     if (Input.GetKeyDown(KeyCode.Alpha1) && !amin.GetCurrentAnimatorStateInfo(0).IsName("SkillOne"))
-//     //     {
-            
-//     //         amin.SetTrigger("skillOne");
-//     //         Instantiate(skillParticleOne, pawPointOne.position, pawPointOne.rotation);
-           
-//     //     }
-//     //     if (Input.GetKeyDown(KeyCode.Alpha2) && !amin.GetCurrentAnimatorStateInfo(0).IsName("SkillTwo"))
-//     //     {
-
-//     //         amin.SetTrigger("skillTwo");
-//     //         Instantiate(skillParticleTwo, pawPointTwo.position, pawPointTwo.rotation);
-
-//     //     }
-
-
-//     // }
-
 // }
-
-
-
-
-
 
 using UnityEngine;
 
@@ -185,12 +140,12 @@ public class PlayerController : MonoBehaviour
     [Header("References")]
     [SerializeField] private CharacterController charCon;
     [SerializeField] private Animator anim;
-    private CameraController cam;
+    private Transform camTransform; // Lưu cache transform camera
 
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float jumpForce = 8f;
-    [SerializeField] private float gravityScale = 2f;
+    [SerializeField] private float gravityScale = 2.5f; // Tăng một chút cho cảm giác nhảy đầm hơn
     [SerializeField] private float rotateSpeed = 10f;
 
     [Header("Particles")]
@@ -209,16 +164,13 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        cam = FindAnyObjectByType<CameraController>();
+        if (Camera.main != null) camTransform = Camera.main.transform;
         lastGrounded = true;
     }
 
     void Update()
     {
-        
-        // ❌ Nếu chết → khóa toàn bộ điều khiển
-        if (anim.GetBool("isDead"))
-            return;
+        if (anim.GetBool("isDead")) return;
 
         HandleMovement();
         HandleJumpAndGravity();
@@ -226,39 +178,48 @@ public class PlayerController : MonoBehaviour
         UpdateAnimator();
     }
 
-    // ================= MOVEMENT =================
     void HandleMovement()
     {
-        Vector3 input = (cam.transform.forward * Input.GetAxisRaw("Vertical")) +
-                        (cam.transform.right * Input.GetAxisRaw("Horizontal"));
-        input.y = 0f;
-        input.Normalize();
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
 
-        if (input.magnitude > 0.1f)
+        // Tính hướng dựa trên Camera
+        Vector3 forward = camTransform.forward;
+        Vector3 right = camTransform.right;
+        forward.y = 0;
+        right.y = 0;
+        forward.Normalize();
+        right.Normalize();
+
+        Vector3 moveDir = (forward * v + right * h).normalized;
+
+        if (moveDir.magnitude > 0.1f)
         {
-            Quaternion targetRot = Quaternion.LookRotation(input);
+            Quaternion targetRot = Quaternion.LookRotation(moveDir);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, rotateSpeed * Time.deltaTime);
         }
 
-        moveAmount.x = input.x * moveSpeed;
-        moveAmount.z = input.z * moveSpeed;
+        moveAmount.x = moveDir.x * moveSpeed;
+        moveAmount.z = moveDir.z * moveSpeed;
     }
 
-    // ================= JUMP + GRAVITY =================
     void HandleJumpAndGravity()
     {
         if (charCon.isGrounded)
         {
-            if (!lastGrounded && landingParticle)
-                landingParticle.SetActive(true);
+            // Hiệu ứng hạ cánh
+            if (!lastGrounded)
+            {
+                SpawnParticle(landingParticle, transform.position);
+            }
 
-            if (yVelocity < 0)
-                yVelocity = -2f; // ép dính đất
+            if (yVelocity < 0) yVelocity = -2f; 
 
             if (Input.GetButtonDown("Jump"))
             {
                 yVelocity = jumpForce;
-                if (jumpParticle) jumpParticle.SetActive(true);
+                anim.SetTrigger("jump"); // Nên có trigger riêng cho jump
+                SpawnParticle(jumpParticle, transform.position);
             }
         }
         else
@@ -267,49 +228,53 @@ public class PlayerController : MonoBehaviour
         }
 
         lastGrounded = charCon.isGrounded;
-
         moveAmount.y = yVelocity;
         charCon.Move(moveAmount * Time.deltaTime);
     }
 
-    // ================= SKILLS =================
     void HandleSkills()
     {
-        // Skill 1
-        if (Input.GetKeyDown(KeyCode.Alpha1) &&
-            !anim.GetCurrentAnimatorStateInfo(0).IsName("SkillOne"))
+        if (Input.GetKeyDown(KeyCode.Alpha1) && !IsPlayingAnimation("SkillOne"))
         {
             anim.SetTrigger("skillOne");
-            if (skillParticleOne && pawPointOne)
-                Instantiate(skillParticleOne, pawPointOne.position, pawPointOne.rotation);
+            SpawnParticle(skillParticleOne, pawPointOne.position, pawPointOne.rotation);
         }
 
-        // Skill 2
-        if (Input.GetKeyDown(KeyCode.Alpha2) &&
-            !anim.GetCurrentAnimatorStateInfo(0).IsName("SkillTwo"))
+        if (Input.GetKeyDown(KeyCode.Alpha2) && !IsPlayingAnimation("SkillTwo"))
         {
             anim.SetTrigger("skillTwo");
-            if (skillParticleTwo && pawPointTwo)
-                Instantiate(skillParticleTwo, pawPointTwo.position, pawPointTwo.rotation);
+            SpawnParticle(skillParticleTwo, pawPointTwo.position, pawPointTwo.rotation);
         }
     }
 
-    // ================= ANIMATOR =================
+    // Hàm phụ trợ để tránh lặp code Instantiate
+    void SpawnParticle(GameObject prefab, Vector3 pos, Quaternion rot = default)
+{
+    if (prefab) 
+    {
+        GameObject newParticle = Instantiate(prefab, pos, rot);
+        // Tự động xóa sau 2 giây (hoặc tùy độ dài của hiệu ứng)
+        Destroy(newParticle, 1.5f); 
+    }
+}
+
+    bool IsPlayingAnimation(string stateName)
+    {
+        return anim.GetCurrentAnimatorStateInfo(0).IsName(stateName);
+    }
+
     void UpdateAnimator()
     {
-        Vector3 horizontalVel = new Vector3(moveAmount.x, 0f, moveAmount.z);
-
+        Vector2 horizontalVel = new Vector2(moveAmount.x, moveAmount.z);
         anim.SetFloat("speed", horizontalVel.magnitude);
         anim.SetBool("isGrounded", charCon.isGrounded);
         anim.SetFloat("yVel", yVelocity);
     }
 
-    // ================= PUBLIC =================
     public void Die()
     {
         anim.SetBool("isDead", true);
-        moveAmount = Vector3.zero;
-        yVelocity = 0f;
+        // Ngừng di chuyển ngay lập tức
+        charCon.Move(Vector3.zero);
     }
 }
-
