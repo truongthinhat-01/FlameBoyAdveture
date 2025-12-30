@@ -149,7 +149,7 @@ public class UIManager : BaseManager<UIManager>
 
 
     // Thay thế hàm LoadSelectedMap để đảm bảo thứ tự gọi
-     public void LoadSelectedMap(string mapName)
+    public void LoadSelectedMap(string mapName)
     {
     mapToLoad = mapName; // Gán tên map ngay khi bắt đầu load
     ShowLoading();

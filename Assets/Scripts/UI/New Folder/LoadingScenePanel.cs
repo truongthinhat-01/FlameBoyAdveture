@@ -33,45 +33,7 @@ public class LoadingScenePanel : MonoBehaviour
 
         routine = StartCoroutine(LoadingRoutine());
     }
-
-    // IEnumerator LoadingRoutine()
-    // {
-    //     fillImage.fillAmount = 0f;
-
-    //     bool[] paused = new bool[pausePoints.Length];
-
-    //     while (fillImage.fillAmount < 1f)
-    //     {
-    //         fillImage.fillAmount += Time.deltaTime * fillSpeed;
-    //         fillImage.fillAmount = Mathf.Clamp01(fillImage.fillAmount);
-
-    //         // Update % text
-    //         if (percentText)
-    //             percentText.text = Mathf.RoundToInt(fillImage.fillAmount * 100f) + "%";
-
-    //         // Check pause points
-    //         for (int i = 0; i < pausePoints.Length; i++)
-    //         {
-    //             if (!paused[i] && fillImage.fillAmount >= pausePoints[i])
-    //             {
-    //                 paused[i] = true;
-    //                 yield return new WaitForSeconds(pauseTimes[i]);
-    //             }
-    //         }
-
-    //         yield return null;
-    //     }
-
-    //     fillImage.fillAmount = 1f;
-
-    //     if (percentText)
-    //         percentText.text = "100%";
-
-    //     OnLoadingComplete?.Invoke();
-    // }
-
-    // Trong LoadingScenePanel.cs
-
+    
 IEnumerator LoadingRoutine()
 {
     fillImage.fillAmount = 0f;
