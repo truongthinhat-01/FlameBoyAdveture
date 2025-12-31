@@ -147,8 +147,6 @@ public class UIManager : BaseManager<UIManager>
         return mapToLoad;
     }
 
-
-    // Thay thế hàm LoadSelectedMap để đảm bảo thứ tự gọi
     public void LoadSelectedMap(string mapName)
     {
     mapToLoad = mapName; // Gán tên map ngay khi bắt đầu load
@@ -188,7 +186,7 @@ public class UIManager : BaseManager<UIManager>
         asyncLoad.allowSceneActivation = true; // Cho phép vào cảnh mới
     }
     }
-    // Thêm hàm này vào UIManager.cs
+
 public void UpdatePlayerHealth(int hp)
 {
     currentHealth = hp;
