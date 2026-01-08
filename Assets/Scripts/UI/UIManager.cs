@@ -21,9 +21,6 @@ public class UIManager : BaseManager<UIManager>
     AsyncOperation asyncLoad;
     string mapToLoad;
 
-
-
-
     [Header("HUD")]
     public HealthUI healthUI;
 

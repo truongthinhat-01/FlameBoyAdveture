@@ -3,27 +3,58 @@ using System.Collections;
 
 public class PlayerHealth : MonoBehaviour
 {
-    [Header("Health Settings")]
+    [Header("Health")]
     public int maxHealth = 3;
     public int currentHealth;
-    
-    [Header("References")]
-    public Animator anim;
-    
-    private bool isDead = false;
-    private bool isInvulnerable = false;
+
+    [Header("Hit Effect - Particle")]
+    public GameObject hitParticle;
+    public Transform pawHit;
+
+    [Header("Hit Flash Colors")]
+    public Color hitFlashColor = Color.red;
+    public Color whiteFlashColor = Color.white;
+
+    [Header("Blink Setting")]
+    public int blinkCount = 3;
+    public float blinkInterval = 0.07f;
+
+    Animator animator;
+    bool isDead;
+    bool isInvulnerable;
+
+    Renderer[] renderers;
+    Color[] originalColors;
+
+    void Awake()
+    {
+        animator = GetComponentInChildren<Animator>();
+        if (animator == null)
+            Debug.LogError("❌ Animator NOT FOUND");
+
+        if (pawHit == null)
+            pawHit = transform;
+
+        renderers = GetComponentsInChildren<Renderer>();
+        originalColors = new Color[renderers.Length];
+
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            Material mat = renderers[i].material;
+
+            if (mat.HasProperty("_BaseColor"))
+                originalColors[i] = mat.GetColor("_BaseColor");
+            else if (mat.HasProperty("_Color"))
+                originalColors[i] = mat.color;
+        }
+    }
 
     void Start()
     {
         currentHealth = maxHealth;
-        
-        // Khởi tạo UI ban đầu
-        if (UIManager.HasInstance && UIManager.Instance.healthUI != null)
-        {
-            UIManager.Instance.currentHealth = currentHealth;
-            UIManager.Instance.healthUI.Init(maxHealth);
-            UIManager.Instance.healthUI.UpdateHealth(currentHealth);
-        }
+
+        if (UIManager.HasInstance)
+            UIManager.Instance.UpdatePlayerHealth(currentHealth);
     }
 
     public void TakeDamage(int damage)
@@ -33,57 +64,97 @@ public class PlayerHealth : MonoBehaviour
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
-        // Cập nhật trái tim trên UI
         if (UIManager.HasInstance)
-        {
             UIManager.Instance.UpdatePlayerHealth(currentHealth);
-        }
 
-        if (currentHealth <= 0) 
-        {
-            StartCoroutine(DieRoutine()); // Gọi Coroutine xử lý cái chết
-        }
-        else 
-        {
-            StartCoroutine(InvulnerableRoutine());
-        }
+        PlayHitParticle();
+        StartCoroutine(HitFlashRoutine());
+
+        if (currentHealth <= 0)
+            StartCoroutine(DieRoutine());
+        else
+            StartCoroutine(HitRoutine());
     }
 
-    IEnumerator InvulnerableRoutine()
+    // ================= HIT =================
+    IEnumerator HitRoutine()
     {
-        isInvulnerable = true; 
-        if (anim != null) anim.SetTrigger("hit");
-        yield return new WaitForSeconds(1.0f);
+        isInvulnerable = true;
+
+        animator.ResetTrigger("Die");
+        animator.SetTrigger("Hit");
+
+        yield return new WaitForSeconds(0.8f);
         isInvulnerable = false;
     }
 
-    // Logic xử lý cái chết để Animation kịp chạy
+    // ================= FLASH (RED → WHITE) =================
+    IEnumerator HitFlashRoutine()
+    {
+        for (int i = 0; i < blinkCount; i++)
+        {
+            SetPlayerColor(hitFlashColor);   // 🔴 ĐỎ
+            yield return new WaitForSeconds(blinkInterval);
+
+            SetPlayerColor(whiteFlashColor); // ⚪ TRẮNG
+            yield return new WaitForSeconds(blinkInterval);
+        }
+
+        RestoreOriginalColor(); // 🎨 Trả về màu gốc
+    }
+
+    void SetPlayerColor(Color color)
+    {
+        foreach (Renderer r in renderers)
+        {
+            Material mat = r.material;
+
+            if (mat.HasProperty("_BaseColor"))
+                mat.SetColor("_BaseColor", color);
+            else if (mat.HasProperty("_Color"))
+                mat.color = color;
+        }
+    }
+
+    void RestoreOriginalColor()
+    {
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            Material mat = renderers[i].material;
+
+            if (mat.HasProperty("_BaseColor"))
+                mat.SetColor("_BaseColor", originalColors[i]);
+            else if (mat.HasProperty("_Color"))
+                mat.color = originalColors[i];
+        }
+    }
+
+    // ================= DIE =================
     IEnumerator DieRoutine()
     {
         if (isDead) yield break;
         isDead = true;
 
-        Debug.Log("Player bắt đầu diễn Animation chết...");
+        animator.ResetTrigger("Hit");
+        animator.SetTrigger("Die");
 
-        // 1. Kích hoạt Animation chết
-        if (anim != null) 
-        {
-            anim.SetBool("isDead", true); 
-        }
-        
-        // 2. Gọi hàm Die bên PlayerController để khóa di chuyển và Input
         PlayerController pc = GetComponent<PlayerController>();
         if (pc != null) pc.Die();
 
-        // 3. CHỜ ĐỢI: Đây là phần quan trọng nhất. 
-        // Phải đợi cho nhân vật ngã xuống xong rồi mới hiện bảng Lose.
-        // Dùng yield return new WaitForSeconds để đợi theo thời gian thực của game.
-        yield return new WaitForSeconds(2.5f); 
+        yield return new WaitForSeconds(2.5f);
 
-        // 4. Sau khi đợi xong, mới hiện bảng Lose (Lúc này Time.timeScale mới về 0)
-        if (UIManager.HasInstance) 
-        {
+        if (UIManager.HasInstance)
             UIManager.Instance.ShowLose();
-        }
+    }
+
+    void PlayHitParticle()
+    {
+        if (hitParticle == null) return;
+
+        Instantiate(
+            hitParticle,
+            pawHit.position,
+            Quaternion.identity
+        );
     }
 }
