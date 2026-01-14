@@ -1,18 +1,14 @@
 using UnityEngine;
 
-public class TriggerSkelecton : MonoBehaviour
+public class TriggerSkeleton : MonoBehaviour
 {
-    SkeletonController skeleton;
+    public SkeletonController skeleton;
 
-    private void Awake() {
-        if (skeleton == null) {
-            skeleton = FindAnyObjectByType<SkeletonController>();
-        }
-    }
-
-    private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag("Player")) {
-            skeleton.WakeUp();
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player") && skeleton != null)
+        {
+            skeleton.SpawnEnemy();
             Destroy(gameObject);
         }
     }

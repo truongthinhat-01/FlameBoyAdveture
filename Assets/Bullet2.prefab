@@ -19386,8 +19386,9 @@ GameObject:
   - component: {fileID: 1055885461351747804}
   - component: {fileID: 2892565921782925399}
   - component: {fileID: 6145065891043105434}
-  - component: {fileID: 8836300278157481200}
   - component: {fileID: 7785771138001988817}
+  - component: {fileID: 6734372707687434427}
+  - component: {fileID: 8275357950347371018}
   m_Layer: 0
   m_Name: Bullet2
   m_TagString: Untagged
@@ -19512,22 +19513,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8836300278157481200
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7085892289214849196}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e1992c9df4afe947971dc8081fc5f40, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 20
-  lifeTime: 5
-  damage: 10
-  hitEffect: {fileID: 4893767420844493718, guid: e9ebc9689ce4dd24c86e0e3309cb75c8, type: 3}
 --- !u!114 &7785771138001988817
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19541,6 +19526,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitEffect: {fileID: 4893767420844493718, guid: e9ebc9689ce4dd24c86e0e3309cb75c8, type: 3}
+--- !u!114 &6734372707687434427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7085892289214849196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fb0154538b151747a788789a36597df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8275357950347371018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7085892289214849196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2896ec4671d15014186baa3370b0d6aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 25
+  lifeTime: 3
 --- !u!1 &8676389702172655522
 GameObject:
   m_ObjectHideFlags: 0

@@ -71,10 +71,10 @@ public class UIManager : BaseManager<UIManager>
             healthUI.UpdateHealth(currentHealth);
         }
 
-        if (CoinManager.Instance != null)
-        {
-            hudPanel.UpdateCoinUI(CoinManager.Instance.currentCoin);
-        }
+        // if (CoinManager.Instance != null)
+        // {
+        //     hudPanel.UpdateCoinUI(CoinManager.Instance.currentCoin);
+        // }
     }
 
     // ===== PAUSE =====

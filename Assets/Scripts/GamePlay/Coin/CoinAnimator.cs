@@ -3,22 +3,24 @@ using UnityEngine;
 public class CoinAnimator : MonoBehaviour
 {
     [SerializeField] private float AngularSpeed = 50f;
+    [SerializeField] private float coinHeight = 0.7f;
+    [SerializeField] private float MovementAmplitude = 0.5f;
+    [SerializeField] private float MovementFrequency = 1f;
 
-    [SerializeField] float coinHeight = 0.7f;
+    private Vector3 startLocalPos;
 
-    [SerializeField] float MovementAmplitude = 0.5f;
+    void Start()
+    {
+        startLocalPos = transform.localPosition;
+    }
 
-    [SerializeField] float MovemantFrequecy = 1f;
-
-    [SerializeField] private Transform coinMesh;
-   
     void Update()
     {
+        // Xoay coin quanh trục Y, tại chỗ
+        transform.Rotate(0f, AngularSpeed * Time.deltaTime, 0f);
 
-        coinMesh.Rotate(0f, AngularSpeed * Time.deltaTime, 0f);
-
-        float deltay = MovementAmplitude * Mathf.Sin(MovementAmplitude * Time.deltaTime);
-
-        coinMesh.localPosition = new Vector3 (0f , coinHeight + deltay, 0f);
+        // Nhấp nhô lên xuống
+        float deltaY = MovementAmplitude * Mathf.Sin(MovementFrequency * Time.time);
+        transform.localPosition = startLocalPos + new Vector3(0f, coinHeight + deltaY, 0f);
     }
 }

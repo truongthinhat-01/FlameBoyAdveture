@@ -38,16 +38,20 @@ public class SimpleMovingTrap : MonoBehaviour
                 transform.localPosition = startLocalPos + new Vector3(0, 0, offset);
         }
     }
-    private void OggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
+{
+    if (other.CompareTag("Player"))
     {
-        if (other.CompareTag("Player"))
+        PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+        if (playerHealth != null)
         {
-            PlayerHealth playerHealth = GetComponent<PlayerHealth>();
-            if(playerHealth != null)
-            {
-                playerHealth.TakeDamage(1);
-            }
-
+            playerHealth.TakeDamage(1);
+        }
+        else
+        {
+            Debug.Log("PlayerHealth NOT found on " + other.name);
         }
     }
+}
+
 }

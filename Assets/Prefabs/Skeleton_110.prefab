@@ -139,7 +139,6 @@ GameObject:
   - component: {fileID: 2863371943502895756}
   - component: {fileID: 1775355311560388891}
   - component: {fileID: 2682703024806905150}
-  - component: {fileID: 9078118041916273359}
   m_Layer: 0
   m_Name: Skeleton_110
   m_TagString: Untagged
@@ -200,28 +199,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a744dda88f9afae4a83cb85536ea83cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animator: {fileID: 0}
+  agent: {fileID: 0}
   player: {fileID: 4325357622666132704, guid: b727e87ed061fb14bbf45be450f84f07, type: 3}
-  anim: {fileID: 1775355311560388891}
-  bodyCollider: {fileID: 0}
-  handCollider: {fileID: 959328041832724798}
-  walkRange: 12
+  detectRange: 15
   attackRange: 2
-  moveSpeed: 3
-  rotationSpeed: 8
-  isAwake: 0
-  health: 2
---- !u!114 &9078118041916273359
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 263300549429121778}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9fde43780e5dbe5409b818743629a514, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  attackCooldown: 1.5
+  reviveDuration: 3
 --- !u!1 &462926956612765246
 GameObject:
   m_ObjectHideFlags: 0

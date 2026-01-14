@@ -652,7 +652,7 @@ GameObject:
   - component: {fileID: 1406999143}
   - component: {fileID: 1406999142}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Time
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -711,7 +711,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: Time
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -979,8 +979,12 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1019413416298546836, guid: 3a104006a77eb74459d1d3966c36d9af, type: 3}
+      propertyPath: m_Name
+      value: CoinTxt
+      objectReference: {fileID: 0}
+    - target: {fileID: 1019413416298546836, guid: 3a104006a77eb74459d1d3966c36d9af, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1235448970351262957, guid: 3a104006a77eb74459d1d3966c36d9af, type: 3}
       propertyPath: m_IsActive

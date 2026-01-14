@@ -19,8 +19,8 @@ public class UIShow : MonoBehaviour
         }
 
         // Cập nhật Coin ban đầu
-        if (CoinManager.Instance != null)
-            UpdateCoinUI(CoinManager.Instance.currentCoin);
+        // if (CoinManager.Instance != null)
+        //     UpdateCoinUI(CoinManager.Instance.currentCoin);
             
         // Cập nhật Máu ban đầu
         // Sử dụng giá trị máu từ UIManager hoặc PlayerHealth tùy theo logic của bạn
@@ -30,10 +30,14 @@ public class UIShow : MonoBehaviour
         }
     }
 
-    public void UpdateCoinUI(int coin)
-    {
-        if (coinTxt != null) coinTxt.text = coin.ToString();
-    }
+   public void UpdateCoinUI(int current)
+{
+    if (coinTxt == null) return;
+    if (CoinManager.Instance == null) return;
+
+    coinTxt.text = current + "/" + CoinManager.Instance.requiredCoin;
+}
+
 
     // Hàm cập nhật trái tim (Đã sửa logic để cực kỳ ổn định)
     public void UpdateHealthUI(int hp)

@@ -1,7 +1,9 @@
 using UnityEngine;
 using System.Collections;
 
-public class GiantEnemyController : MonoBehaviour
+public class GiantEnemyController : MonoBehaviour, IDamageable
+
+
 {
     [Header("References")]
     public Transform player;
@@ -81,15 +83,33 @@ public class GiantEnemyController : MonoBehaviour
         if (handCollider != null) handCollider.enabled = false;
     }
 
-    public void TakeDamage() {
-        if (isHitPlaying || isDeath) return;
-        currentHit++;
-        if (currentHit >= maxHit) { Die(); return; }
+    // public void TakeDamage() {
+    //     if (isHitPlaying || isDeath) return;
+    //     currentHit++;
+    //     if (currentHit >= maxHit) { Die(); return; }
         
-        isHitPlaying = true;
-        anim.SetTrigger("isHit");
-        StartCoroutine(ResetHitStatus());
+    //     isHitPlaying = true;
+    //     anim.SetTrigger("isHit");
+    //     StartCoroutine(ResetHitStatus());
+    // }
+
+    public void TakeDamage(int damage)
+{
+    if (isHitPlaying || isDeath) return;
+
+    currentHit += damage;
+
+    if (currentHit >= maxHit)
+    {
+        Die();
+        return;
     }
+
+    isHitPlaying = true;
+    anim.SetTrigger("isHit");
+    StartCoroutine(ResetHitStatus());
+}
+
 
     private IEnumerator ResetHitStatus() {
         yield return new WaitForSeconds(0.8f); // Thời gian chờ khớp với clip Hit

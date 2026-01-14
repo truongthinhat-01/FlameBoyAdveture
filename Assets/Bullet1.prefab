@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 1357646698209090854}
   - component: {fileID: 4340489755326679612}
   - component: {fileID: 2964752761843353538}
-  - component: {fileID: 598976827522235551}
   - component: {fileID: 5177667137904082426}
   - component: {fileID: 4217355746029516022}
+  - component: {fileID: 2437909841460941771}
+  - component: {fileID: 7220167719707074541}
   m_Layer: 0
   m_Name: Bullet1
   m_TagString: Untagged
@@ -112,22 +113,6 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &598976827522235551
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2894874859697689533}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e1992c9df4afe947971dc8081fc5f40, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 20
-  lifeTime: 5
-  damage: 10
-  hitEffect: {fileID: 725748389856807714, guid: 4bda94453d2ca7444a0fff05b2d425f5, type: 3}
 --- !u!114 &5177667137904082426
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -168,6 +153,32 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &2437909841460941771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2894874859697689533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fb0154538b151747a788789a36597df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7220167719707074541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2894874859697689533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2896ec4671d15014186baa3370b0d6aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 25
+  lifeTime: 2
 --- !u!1001 &3614184503942703083
 PrefabInstance:
   m_ObjectHideFlags: 0
