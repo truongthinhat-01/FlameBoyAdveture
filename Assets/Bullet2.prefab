@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6182023692703012224}
   - component: {fileID: 2227494895362302502}
   - component: {fileID: 4284660897790987801}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Ember
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4857,7 +4857,7 @@ GameObject:
   - component: {fileID: 4576731718339297106}
   - component: {fileID: 6174195497480643562}
   - component: {fileID: 1733138018255745380}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: CFXR Fire Trail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9753,7 +9753,7 @@ GameObject:
   - component: {fileID: 1450180736911068806}
   - component: {fileID: 8724155852665286947}
   - component: {fileID: 1687547466768475631}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: CFXR Fireball + Fire Trail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14719,7 +14719,7 @@ GameObject:
   - component: {fileID: 1083061730048517147}
   - component: {fileID: 7332148286986895573}
   - component: {fileID: 4005465948490715291}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Smoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19389,7 +19389,7 @@ GameObject:
   - component: {fileID: 7785771138001988817}
   - component: {fileID: 6734372707687434427}
   - component: {fileID: 8275357950347371018}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bullet2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19551,7 +19551,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 25
-  lifeTime: 3
 --- !u!1 &8676389702172655522
 GameObject:
   m_ObjectHideFlags: 0
@@ -19563,7 +19562,7 @@ GameObject:
   - component: {fileID: 43494165446870096}
   - component: {fileID: 3802696168829123473}
   - component: {fileID: 5742065798900172298}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Ember
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24408,7 +24407,7 @@ GameObject:
   - component: {fileID: 5546885556203656902}
   - component: {fileID: 9198214794524196625}
   - component: {fileID: 920476172725023435}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}

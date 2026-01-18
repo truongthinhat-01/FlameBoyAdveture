@@ -157,4 +157,14 @@ public class PlayerHealth : MonoBehaviour
             Quaternion.identity
         );
     }
+    public void HealFull()
+{
+    if (isDead) return;
+
+    currentHealth = maxHealth;
+
+    if (UIManager.HasInstance)
+        UIManager.Instance.UpdatePlayerHealth(currentHealth);
+}
+
 }

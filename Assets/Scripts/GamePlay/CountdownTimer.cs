@@ -68,11 +68,19 @@ public class CountdownTimer : MonoBehaviour
     {
         isRuning = true;
     }
-    void ResetTime()
+    public void ResetTime()
     {
         currentTime = startTime;
         isRuning = true;
         UpdateTimeText();
         
     }
+    public void SetTime(float time)
+{
+    startTime = time;
+    currentTime = time;
+    isRuning = true;
+    UpdateTimeText();
+}
+
 }

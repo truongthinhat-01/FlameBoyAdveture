@@ -8,7 +8,7 @@ public class TriggerSkeleton : MonoBehaviour
     {
         if (other.CompareTag("Player") && skeleton != null)
         {
-            skeleton.SpawnEnemy();
+            skeleton.Spawn();
             Destroy(gameObject);
         }
     }

@@ -1,23 +1,55 @@
 using UnityEngine;
+using UnityEngine.UI; // Cần có để dùng Slider
 
 public class SettingPanel : MonoBehaviour
 {
-    // Gắn cái này vào nút Bật (Button ON)
-    public void OnClickTurnOn()
+  [Header("Music Settings")]
+    public Slider musicSlider;
+    public Button musicButton;
+    public Sprite musicOnSprite;  // Hình cái loa bình thường
+    public Sprite musicOffSprite; // Hình cái loa gạch chéo
+
+    private float lastMusicVol = 0.5f;
+
+    private void OnEnable()
     {
         if (AudioManager.HasInstance)
         {
-            AudioManager.Instance.SetMusicOn();
+            float savedVol = PlayerPrefs.GetFloat("MusicVolume", 0.5f);
+            musicSlider.value = savedVol;
+            UpdateButtonIcon(savedVol);
         }
     }
 
-    // Gắn cái này vào nút Tắt (Button OFF)
-    public void OnClickTurnOff()
+    // 1. Gắn vào On Value Changed của Slider
+    public void OnMusicSliderChanged(float val)
     {
-        if (AudioManager.HasInstance)
+        AudioManager.Instance.SetMusicVolume(val);
+        if (val > 0) lastMusicVol = val;
+        UpdateButtonIcon(val);
+    }
+
+    // 2. Gắn vào On Click của Button
+    public void OnClickToggleMusic()
+    {
+        if (musicSlider.value > 0) 
         {
-            AudioManager.Instance.SetMusicOff();
+            lastMusicVol = musicSlider.value;
+            musicSlider.value = 0; // Khi gán = 0, hàm OnMusicSliderChanged sẽ tự chạy
         }
+        else 
+        {
+            musicSlider.value = lastMusicVol;
+        }
+    }
+
+    // 3. Hàm đổi hình ảnh Icon
+    private void UpdateButtonIcon(float val)
+    {
+        if (val <= 0)
+            musicButton.image.sprite = musicOffSprite;
+        else
+            musicButton.image.sprite = musicOnSprite;
     }
 
     public void BackToMenu()

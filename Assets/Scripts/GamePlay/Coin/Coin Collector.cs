@@ -69,4 +69,3 @@ public class CoinCollector : MonoBehaviour
         other.gameObject.SetActive(false);
     }
 }
-

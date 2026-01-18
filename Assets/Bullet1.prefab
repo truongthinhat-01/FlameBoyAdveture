@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 4217355746029516022}
   - component: {fileID: 2437909841460941771}
   - component: {fileID: 7220167719707074541}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bullet1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -178,7 +178,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 25
-  lifeTime: 2
 --- !u!1001 &3614184503942703083
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -187,6 +186,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6674096334514704548}
     m_Modifications:
+    - target: {fileID: 8503596642308116957, guid: ae7fcf8e2f10ecc46b81d336f61a285f, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 8503596642308116959, guid: ae7fcf8e2f10ecc46b81d336f61a285f, type: 3}
       propertyPath: m_Materials.Array.size
       value: 1
@@ -250,6 +253,14 @@ PrefabInstance:
     - target: {fileID: 8503596642471129455, guid: ae7fcf8e2f10ecc46b81d336f61a285f, type: 3}
       propertyPath: m_Name
       value: CFXR Fireball
+      objectReference: {fileID: 0}
+    - target: {fileID: 8503596642471129455, guid: ae7fcf8e2f10ecc46b81d336f61a285f, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8503596642769193702, guid: ae7fcf8e2f10ecc46b81d336f61a285f, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 8503596642769193703, guid: ae7fcf8e2f10ecc46b81d336f61a285f, type: 3}
       propertyPath: m_Range

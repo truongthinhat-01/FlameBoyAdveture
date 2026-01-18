@@ -1,95 +1,54 @@
-﻿// using UnityEngine;
-
-// public class CoinManager : MonoBehaviour
-// {
-//     public static CoinManager Instance;
-
-//     [Header("Coin Settings")]
-//     public int requiredCoin = 10;
-//     public int currentCoin;
-
-//     [Header("Target Object")]
-//     public GameObject gameObj; // cửa / cầu thang / boss ...
-
-//     void Awake()
-//     {
-//         if (Instance == null)
-//             Instance = this;
-//         else
-//         {
-//             Destroy(gameObject);
-//             return;
-//         }
-//     }
-
-//     void Start()
-//     {
-//         currentCoin = 0;
-
-//         if (gameObj != null)
-//             gameObj.SetActive(false);
-
-//         UpdateCoinUI();
-//     }
-
-//     // ===== ADD COIN =====
-//     public void AddCoin(int amount)
-//     {
-//         currentCoin += amount;
-//         UpdateCoinUI();
-
-//         if (currentCoin >= requiredCoin)
-//         {
-//             Unlock();
-//         }
-//     }
-
-//     // ===== UPDATE UI =====
-//     void UpdateCoinUI()
-//     {
-//         if (UIManager.HasInstance &&
-//             UIManager.Instance.hudPanel.gameObject.activeSelf)
-//         {
-//             UIManager.Instance.hudPanel.UpdateCoinUI(currentCoin);
-//         }
-//     }
-
-//     // ===== UNLOCK =====
-//     void Unlock()
-//     {
-//         Debug.Log("ĐỦ COIN!");
-
-//         if (gameObj != null)
-//             gameObj.SetActive(true);
-//     }
-// }
-
-
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class CoinManager : MonoBehaviour
 {
-    
     public static CoinManager Instance;
- 
+    
 
     [Header("Coin")]
     public int requiredCoin = 4;
     public int currentCoin;
+    public bool unlocked;
 
-    [Header("Target")]
-    public GameObject gameObj; // cửa / boss / portal
+    // [Header("Boss")]
+    // public GameObject boss;   // 👈 BOSS CỦA KHU NÀY
 
-    bool unlocked;
+     [Header("Enemies To Spawn")]
+    public List<GameObject> enemies;
 
-    void Start()
+    void Awake()
     {
+        if (Instance == null)
+            Instance = this;
+    }
+
+    // public void SetAsCurrentArea()
+    // {
+    //     Instance = this;
+    //     UpdateUI();
+    // }
+
+    public void SetAsCurrentArea()
+{
+    Instance = this;
+    ResetCoin(requiredCoin); // 🔥 RESET KHI QUA KHU
+}
+
+
+    public void ResetCoin(int newRequiredCoin)
+    {
+        requiredCoin = newRequiredCoin;
         currentCoin = 0;
         unlocked = false;
 
-        if (gameObj != null)
-            gameObj.SetActive(false);
-
+        // if (boss != null)
+        //     boss.SetActive(false); // 👈 chưa đủ coin thì boss ẩn
+        foreach (GameObject enemy in enemies)
+        {
+            if (enemy != null)
+                enemy.SetActive(false);
+        }
         UpdateUI();
     }
 
@@ -99,43 +58,46 @@ public class CoinManager : MonoBehaviour
 
         currentCoin += amount;
         currentCoin = Mathf.Min(currentCoin, requiredCoin);
-
         UpdateUI();
 
         if (currentCoin >= requiredCoin)
         {
-            Unlock();
+            SpawnBoss();
         }
+    }
+
+    void SpawnBoss()
+    {
+        // unlocked = true;
+
+        // if (boss != null)
+        // {
+        //     boss.SetActive(true);   // 👈 BOSS XUẤT HIỆN
+        //     Debug.Log("👹 BOSS XUẤT HIỆN!");
+        // }
+
+         unlocked = true;
+
+        foreach (GameObject enemy in enemies)
+        {
+            if (enemy == null) continue;
+            
+            enemy.SetActive(true);
+           
+
+            ISpawnable spawnable = enemy.GetComponent<ISpawnable>();
+            if (spawnable != null)
+            {
+                spawnable.Spawn(); // 🔥 gọi spawn chuẩn
+            }
+        }
+
+        Debug.Log("👹 ENEMIES ĐÃ ĐƯỢC SPAWN!");
     }
 
     void UpdateUI()
     {
-        if (UIManager.HasInstance &&
-            UIManager.Instance.hudPanel.gameObject.activeSelf)
-        {
-            // 👉 GIỮ NGUYÊN CÁCH GỌI UI CỦA BẠN
+        if (UIManager.HasInstance)
             UIManager.Instance.hudPanel.UpdateCoinUI(currentCoin);
-        }
     }
-
-    void Unlock()
-    {
-        unlocked = true;
-
-        if (gameObj != null)
-            gameObj.SetActive(true);
-
-        Debug.Log("ĐỦ COIN KHU NÀY");
-    }
-    public void SetAsCurrentArea()
-    {
-          Instance = this;
-    if (UIManager.HasInstance &&
-        UIManager.Instance.hudPanel.gameObject.activeSelf)
-    {
-        // đẩy UI về 0/x hoặc current/x
-        UIManager.Instance.hudPanel.UpdateCoinUI(currentCoin);
-    }
-    }
-
 }

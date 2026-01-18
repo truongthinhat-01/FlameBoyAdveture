@@ -60,22 +60,36 @@ public class UIManager : BaseManager<UIManager>
     }
 
     //===== HUD =====
+    // public void ShowHUD()
+    // {
+    //     DisableAll();
+    //     hudPanel.gameObject.SetActive(true);
+
+    //     if (healthUI != null)
+    //     {
+    //         healthUI.Init(maxHealth);
+    //         healthUI.UpdateHealth(currentHealth);
+    //     }
+
+    //     // if (CoinManager.Instance != null)
+    //     // {
+    //     //     hudPanel.UpdateCoinUI(CoinManager.Instance.currentCoin);
+    //     // }
+    // }
     public void ShowHUD()
+{
+    DisableAll();
+    hudPanel.gameObject.SetActive(true);
+
+    Time.timeScale = 1f;       // 🔥 ép resume
+    AudioListener.pause = false;
+
+    if (healthUI != null)
     {
-        DisableAll();
-        hudPanel.gameObject.SetActive(true);
-
-        if (healthUI != null)
-        {
-            healthUI.Init(maxHealth);
-            healthUI.UpdateHealth(currentHealth);
-        }
-
-        // if (CoinManager.Instance != null)
-        // {
-        //     hudPanel.UpdateCoinUI(CoinManager.Instance.currentCoin);
-        // }
+        healthUI.Init(maxHealth);
+        healthUI.UpdateHealth(currentHealth);
     }
+}
 
     // ===== PAUSE =====
     public void ShowPause(bool show)

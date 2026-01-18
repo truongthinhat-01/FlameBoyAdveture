@@ -57,16 +57,41 @@ void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     }
 
     // ===== RESTART =====
-    public void RestartGame()
-    {
-        isPaused = false;
-        Time.timeScale = 1f;
-        AudioListener.pause = false;
+    // public void RestartGame()
+    // {
+    //     isPaused = false;
+    //     Time.timeScale = 1f;
+    //     AudioListener.pause = false;
 
-        SceneManager.LoadScene(
-            SceneManager.GetActiveScene().buildIndex
-        );
+    //     SceneManager.LoadScene(
+    //         SceneManager.GetActiveScene().buildIndex
+    //     );
+    // }
+
+    public void RestartGame()
+{
+    // 1️⃣ Resume game
+    Time.timeScale = 1f;
+    AudioListener.pause = false;
+    isPaused = false;
+
+    // 2️⃣ Tắt toàn bộ UI qua UIManager
+    if (UIManager.HasInstance)
+    {
+        UIManager.Instance.ShowHUD(); // ❗ quan trọng
     }
+
+    // 3️⃣ Reset Timer
+    if (CountdownTimer.Instance != null)
+    {
+        CountdownTimer.Instance.ResetTime();
+    }
+
+    // 4️⃣ Load lại scene
+    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+}
+
+
 
     // ===== BACK MENU =====
     public void BackMenu()

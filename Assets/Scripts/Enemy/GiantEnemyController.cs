@@ -2,126 +2,180 @@ using UnityEngine;
 using System.Collections;
 
 public class GiantEnemyController : MonoBehaviour, IDamageable
-
-
 {
+
     [Header("References")]
     public Transform player;
     public Animator anim;
-    public StairController stair;
 
     [Header("Colliders")]
-    public Collider bodyCollider; 
-    public Collider handCollider; // Collider này sẽ được bật/tắt bởi Animation Event
+    public Collider bodyCollider;
+    public Collider handCollider;
 
-    [Header("Settings")]
-    public float walkRange = 10f;
-    public float runRange = 6f;
+    [Header("Ranges")]
+    public float walkRange = 12f;
+    public float runRange = 7f;
     public float attackRange = 2.5f;
+
+    [Header("Speed")]
     public float walkSpeed = 1.5f;
     public float runSpeed = 3.5f;
 
-    private bool isHitPlaying = false;
-    private bool isDeath = false;
-    private int currentHit = 0;
+    [Header("Stats")]
     public int maxHit = 3;
 
-    private void Start() {
-        if (handCollider != null) handCollider.enabled = false; // Mặc định tắt tay
-    }
+    bool isDead;
+    bool isHit;
+    int currentHit;
+    bool isAttacking;
 
-    private void Update()
+
+    // =========================
+    void Start()
     {
-        if (player == null || isDeath || isHitPlaying) return;
+        //if (handCollider) handCollider.enabled = false;
 
-        float dist = Vector3.Distance(transform.position, player.position);
-
-        // 1. Logic xoay mặt về phía player (chỉ khi trong tầm nhìn)
-        if (dist <= walkRange) {
-            Vector3 dir = (player.position - transform.position);
-            dir.y = 0;
-            if (dir != Vector3.zero) {
-                Quaternion targetRotation = Quaternion.LookRotation(dir);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
-            }
-        }
-
-        // 2. Logic di chuyển và Animation
-        if (dist <= attackRange) {
-            UpdateAnimationStates(false, false, true);
-        } 
-        else if (dist <= runRange) {
-            transform.position += transform.forward * runSpeed * Time.deltaTime;
-            UpdateAnimationStates(false, true, false);
-        } 
-        else if (dist <= walkRange) {
-            transform.position += transform.forward * walkSpeed * Time.deltaTime;
-            UpdateAnimationStates(true, false, false);
-        } 
-        else {
-            UpdateAnimationStates(false, false, false);
+        if (player == null)
+        {
+            GameObject p = GameObject.FindGameObjectWithTag("Player");
+            if (p) player = p.transform;
         }
     }
 
-    // Hàm này giúp chống "loạn" bằng cách kiểm tra giá trị cũ trước khi Set
-    void UpdateAnimationStates(bool walk, bool run, bool attack) {
-        if (anim == null) return;
-        if (anim.GetBool("isWalk") != walk) anim.SetBool("isWalk", walk);
-        if (anim.GetBool("isRun") != run) anim.SetBool("isRun", run);
-        if (anim.GetBool("isAttack") != attack) anim.SetBool("isAttack", attack);
-    }
-
-    // --- Animation Events (Gọi từ cửa sổ Animation của đòn đánh) ---
- public void EnableHandCollider() {
-    if (handCollider != null) {
-        handCollider.enabled = true; // BẬT LẠI để có thể gây dame lần tiếp theo
-        Debug.Log("Đã bật lại Collider tay để đánh tiếp");
-    }
-}
-
-    public void DisableHandCollider() {
-        if (handCollider != null) handCollider.enabled = false;
-    }
-
-    // public void TakeDamage() {
-    //     if (isHitPlaying || isDeath) return;
-    //     currentHit++;
-    //     if (currentHit >= maxHit) { Die(); return; }
-        
-    //     isHitPlaying = true;
-    //     anim.SetTrigger("isHit");
-    //     StartCoroutine(ResetHitStatus());
-    // }
-
-    public void TakeDamage(int damage)
+void Update()
 {
-    if (isHitPlaying || isDeath) return;
+    if (player == null || isDead || isHit) return;
 
-    currentHit += damage;
+    float dist = Vector3.Distance(transform.position, player.position);
 
-    if (currentHit >= maxHit)
+    // 🔒 ĐANG ATTACK → ĐỨNG IM
+    if (isAttacking)
     {
-        Die();
+        SetState(false, false, true);
         return;
     }
 
-    isHitPlaying = true;
-    anim.SetTrigger("isHit");
-    StartCoroutine(ResetHitStatus());
+    // Xoay mặt về player (chỉ khi KHÔNG attack)
+    Vector3 dir = player.position - transform.position;
+    dir.y = 0;
+    if (dir != Vector3.zero)
+    {
+        transform.rotation = Quaternion.Slerp(
+            transform.rotation,
+            Quaternion.LookRotation(dir),
+            Time.deltaTime * 5f
+        );
+    }
+
+    if (dist <= attackRange)
+    {
+        //isAttacking = true;
+        SetState(false, false, true);
+    }
+    else if (dist <= runRange)
+    {
+        transform.position += transform.forward * runSpeed * Time.deltaTime;
+        SetState(false, true, false);
+    }
+    else if (dist <= walkRange)
+    {
+        transform.position += transform.forward * walkSpeed * Time.deltaTime;
+        SetState(true, false, false);
+    }
+    else
+    {
+        SetState(false, false, false);
+    }
+}
+void SetState(bool walk, bool run, bool attack)
+{
+    anim.SetBool("isWalk", walk);
+    anim.SetBool("isRun", run);
+    anim.SetBool("isAttack", attack);
 }
 
 
-    private IEnumerator ResetHitStatus() {
-        yield return new WaitForSeconds(0.8f); // Thời gian chờ khớp với clip Hit
-        isHitPlaying = false;
+    // =========================
+    void ResetAnim()
+    {
+        anim.SetBool("isWalk", false);
+        anim.SetBool("isRun", false);
+        anim.SetBool("isAttack", false);
     }
 
-    void Die() {
-        isDeath = true;
+    void Move(float speed)
+    {
+        transform.position += transform.forward * speed * Time.deltaTime;
+    }
+
+    void LookAtPlayer()
+    {
+        Vector3 dir = player.position - transform.position;
+        dir.y = 0;
+        if (dir != Vector3.zero)
+        {
+            Quaternion rot = Quaternion.LookRotation(dir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.deltaTime * 6f);
+        }
+    }
+
+    // =========================
+    public void TakeDamage(int dmg)
+    {
+        if (isDead || isHit) return;
+
+        currentHit += dmg;
+
+        if (currentHit >= maxHit)
+        {
+            Die();
+            return;
+        }
+
+        isHit = true;
+        ResetAnim();
+        anim.SetTrigger("isHit");
+        StartCoroutine(EndHit());
+    }
+
+    IEnumerator EndHit()
+    {
+        yield return new WaitForSeconds(0.8f);
+        isHit = false;
+    }
+
+    // =========================
+    void Die()
+    {
+        isDead = true;
+        ResetAnim();
         anim.SetTrigger("isDeath");
+
         if (bodyCollider) bodyCollider.enabled = false;
         if (handCollider) handCollider.enabled = false;
-        if (stair != null) stair.OnPlayerComplete();
+
         Destroy(gameObject, 4f);
     }
+
+    // =========================
+    // ANIMATION EVENTS
+    public void EnableHandCollider()
+    {
+        if (handCollider) handCollider.enabled = true;
+    }
+
+    public void DisableHandCollider()
+    {
+        if (handCollider) handCollider.enabled = false;
+    }
+    public void StartAttack()
+{
+    isAttacking = true;
+}
+public void EndAttack()
+{
+    isAttacking = false;
+}
+
+
 }

@@ -1,47 +1,58 @@
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class AudioManager : BaseManager<AudioManager>
 {
-    [SerializeField] private AudioSource musicSource;
-    public AudioClip backgroundMusic;
+    public AudioMixer mainMixer;
+    private bool isMuted = false;
 
-    protected override void Awake()
+    void Start()
     {
-        base.Awake();
-        DontDestroyOnLoad(this.gameObject);
+        // Khi game bắt đầu, lấy giá trị đã lưu để áp dụng cho Mixer
+        // Nếu chưa có dữ liệu, mặc định sẽ là 0.75f
+        float savedMusic = PlayerPrefs.GetFloat("MusicVolume", 0.75f);
+        float savedSFX = PlayerPrefs.GetFloat("SFXVolume", 0.75f);
 
-        if (musicSource == null) musicSource = GetComponent<AudioSource>();
+        // Áp dụng ngay lập tức
+        SetMusicVolume(savedMusic);
+        SetSFXVolume(savedSFX);
+    }
+
+    public void SetMusicVolume(float value)
+    {
+        if (isMuted && value > 0) isMuted = false; // Tự động bỏ mute nếu kéo slider
         
-        // Tự động phát nhạc khi vào game
-        if (backgroundMusic != null)
-        {
-            musicSource.clip = backgroundMusic;
-            musicSource.loop = true;
-            musicSource.Play();
-        }
+        float db = value <= 0.0001f ? -80f : Mathf.Log10(value) * 20;
+        mainMixer.SetFloat("MusicVol", db);
+        
+        PlayerPrefs.SetFloat("MusicVolume", value);
+        PlayerPrefs.Save(); // Lưu vào bộ nhớ máy
     }
 
-    // --- HÀM CHỈ DÙNG ĐỂ BẬT ---
-    public void SetMusicOn()
+    public void SetSFXVolume(float value)
     {
-        if (musicSource != null)
-        {
-            musicSource.mute = false; // Bỏ chế độ im lặng
-            if (!musicSource.isPlaying) 
-            {
-                musicSource.Play(); // Nếu nhạc đang dừng thì ép phát lại
-            }
-            Debug.Log("AudioManager: Chỉ thực hiện lệnh BẬT");
-        }
+        if (isMuted && value > 0) isMuted = false;
+        
+        float db = value <= 0.0001f ? -80f : Mathf.Log10(value) * 20;
+        mainMixer.SetFloat("SFXVol", db);
+        
+        PlayerPrefs.SetFloat("SFXVolume", value);
+        PlayerPrefs.Save();
     }
 
-    // --- HÀM CHỈ DÙNG ĐỂ TẮT ---
-    public void SetMusicOff()
+    public void ToggleMuteAll()
     {
-        if (musicSource != null)
+        isMuted = !isMuted;
+        
+        if (isMuted)
         {
-            musicSource.mute = true; // Bật chế độ im lặng
-            Debug.Log("AudioManager: Chỉ thực hiện lệnh TẮT");
+            mainMixer.SetFloat("MusicVol", -80f);
+            mainMixer.SetFloat("SFXVol", -80f);
+        }
+        else
+        {
+            SetMusicVolume(PlayerPrefs.GetFloat("MusicVolume", 0.75f));
+            SetSFXVolume(PlayerPrefs.GetFloat("SFXVolume", 0.75f));
         }
     }
 }
